@@ -3,8 +3,12 @@
 - name: Install package haproxy
   become: true
   yum:
-    name: haproxy
+    name: haproxy,libselinux-python
     state: latest
+
+- selinux:
+    state: disabled
+  become: true
 
 - name: Install configuration file haproxy
   template:
@@ -13,4 +17,6 @@
     owner: root
     group: root
     mode: '0644'
+    setype: haproxy_config_t
   notify: restart haproxy
+  become: true
