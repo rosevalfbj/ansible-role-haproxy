@@ -1,0 +1,70 @@
+## HaProxy
+global
+    log         127.0.0.1 local2
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    #maxconn     4000
+    maxconn     8000
+    user        haproxy
+    group       haproxy
+    daemon
+
+    # turn on stats unix socket
+    stats socket /var/lib/haproxy/stats
+
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    #maxconn                 3000
+
+listen stats
+  bind 10.56.5.30:9090
+  balance
+  mode http
+  stats enable
+  stats hide-version
+  stats refresh 5s
+  stats show-node
+  stats auth admin:admin
+  stats uri  /stats
+
+frontend http_app
+    bind 10.56.5.32:80
+    mode http
+    maxconn 50
+    default_backend app
+
+frontend http_ws
+    bind 10.56.5.33:8080
+    mode http
+    maxconn 60
+    default_backend ws
+
+backend app
+    balance roundrobin
+    mode http
+    server  frontend01 10.56.5.40:80 check
+    server  frontend02 10.56.5.41:80 check
+
+backend ws
+    balance roundrobin
+    mode http
+    server  backend01 10.56.5.50:80 check
+    server  backend02 10.56.5.51:80 check

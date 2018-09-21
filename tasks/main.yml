@@ -1,0 +1,16 @@
+---
+
+- name: Install package haproxy
+  become: true
+  yum:
+    name: haproxy
+    state: latest
+
+- name: Install configuration file haproxy
+  template:
+    src: haproxy.cfg.j2
+    dest: "{{ haproxy_cfg }}"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart haproxy
