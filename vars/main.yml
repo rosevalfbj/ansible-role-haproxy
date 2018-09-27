@@ -1,3 +1,14 @@
 ---
 
+keepalived_conf: /etc/keepalived/keepalived.conf
+vip_ipaddress_gw: "192.168.50.100"
+vip_ipaddress_km: "192.168.50.101"
+vip_ipaddress_dss: "192.168.50.102"
+state: "MASTER"
+priority: "101"
+
 haproxy_cfg: /etc/haproxy/haproxy.cfg
+server_name_gw01: web01
+ip_address_gw01: "192.168.50.20"
+server_name_gw02: web02
+ip_address_gw02: "192.168.50.21"

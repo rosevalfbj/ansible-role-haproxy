@@ -1,13 +1,21 @@
 ---
 
-- name: Install package haproxy
+- name: Install packages
   become: true
   yum:
-    name: haproxy,libselinux-python
+    name: haproxy,libselinux-python,keepalived
     state: latest
 
 - selinux:
     state: disabled
+  become: true
+
+- sysctl:
+    name: net.ipv4.ip_nonlocal_bind
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
   become: true
 
 - name: Install configuration file haproxy
@@ -19,4 +27,22 @@
     mode: '0644'
     setype: haproxy_cfg_t
   notify: restart haproxy
+  become: true
+
+- pam_limits:
+    domain: haproxy
+    limit_type: '-'
+    limit_item: nofile
+    value: 32000
+  become: true
+
+- name: Install configuration file keepalived
+  template:
+    src: keepalived.conf.j2
+    dest: "{{ keepalived_conf }}"
+    owner: root
+    group: root
+    mode: '0644'
+    setype: keepalived_conf_t
+  notify: restart keepalived
   become: true

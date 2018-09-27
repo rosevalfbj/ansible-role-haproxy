@@ -35,7 +35,7 @@ defaults
     #maxconn                 3000
 
 listen stats
-  bind 10.56.5.30:9090
+  bind {{ ansible_eth1.ipv4.address }}:9090
   balance
   mode http
   stats enable
@@ -45,26 +45,10 @@ listen stats
   stats auth admin:admin
   stats uri  /stats
 
-frontend http_app
-    bind 10.56.5.32:80
+listen vs_https_gw
+    bind {{ vip_ipaddress_gw }}:80
+    balance roundrobin
     mode http
     maxconn 50
-    default_backend app
-
-frontend http_ws
-    bind 10.56.5.33:8080
-    mode http
-    maxconn 60
-    default_backend ws
-
-backend app
-    balance roundrobin
-    mode http
-    server  frontend01 10.56.5.40:80 check
-    server  frontend02 10.56.5.41:80 check
-
-backend ws
-    balance roundrobin
-    mode http
-    server  backend01 10.56.5.50:80 check
-    server  backend02 10.56.5.51:80 check
+    server  {{ server_name_gw01 }} {{ ip_address_gw01 }}:80 check
+    server  {{ server_name_gw02 }} {{ ip_address_gw02 }}:80 check
