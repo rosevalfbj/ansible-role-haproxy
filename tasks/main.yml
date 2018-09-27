@@ -17,6 +17,6 @@
     owner: root
     group: root
     mode: '0644'
-    setype: haproxy_config_t
+    setype: haproxy_cfg_t
   notify: restart haproxy
   become: true
