@@ -1,0 +1,3 @@
+files/*.crt
+files/*.pem
+files/*.key

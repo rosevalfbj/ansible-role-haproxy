@@ -35,7 +35,7 @@ defaults
     #tune.ssl.default-dh-param 2048
 
 listen stats
-  bind {{ ansible_eth0.ipv4.address }}:9090
+  bind {{ ansible_ens192.ipv4.address }}:9090
   balance
   mode http
   stats enable
@@ -46,21 +46,23 @@ listen stats
   stats uri  /stats
   stats admin if TRUE
 
-#Off Load SSL
-listen vs_https_gw
-    bind {{ vip_ipaddress_gw }}:80 
-    bind {{ vip_ipaddress_gw }}:443 ssl crt {{ path_certs }}/{{ cert_pem }}
+# DSS
+# Off Load SSL
+listen vs_https_dss
+    bind {{ vip_ipaddress_dss }}:80 
+    bind {{ vip_ipaddress_dss }}:443 ssl crt {{ path_certs }}/{{ cert_pem }}
     option forwardfor
     option httpchk HEAD / HTTP/1.1\r\nHost:localhost
     balance roundrobin
     mode http
     maxconn 2048
-    server  {{ server_name_gw01 }} {{ ip_address_gw01 }}:80 check
-    server  {{ server_name_gw02 }} {{ ip_address_gw02 }}:80 check
+    server  {{ server_name_dss01 }} {{ ip_address_dss01 }}:9763 check
+    server  {{ server_name_dss02 }} {{ ip_address_dss02 }}:9763 check
     http-request set-header X-Forwarded-Port %[dst_port]
     http-request add-header X-Forwarded-Proto https if { ssl_fc }
     redirect scheme https if !{ ssl_fc }
 
+# Key Manager
 # SSL Pass Through
 listen vs_https_km
     bind {{ vip_ipaddress_km }}:80
@@ -71,5 +73,19 @@ listen vs_https_km
     option tcplog
     option ssl-hello-chk
     maxconn 2048
-    server  {{ server_name_km01 }} {{ ip_address_km01 }}:443 check
-    server  {{ server_name_km02 }} {{ ip_address_km02 }}:443 check
+    server  {{ server_name_km01 }} {{ ip_address_km01 }}:9443 check
+    server  {{ server_name_km02 }} {{ ip_address_km02 }}:9443 check
+
+# APIGW
+# SSL Pass Through
+listen vs_https_gw
+    bind {{ vip_ipaddress_gw }}:80
+    bind {{ vip_ipaddress_gw }}:443
+    redirect scheme https if !{ ssl_fc }
+    balance roundrobin
+    mode tcp
+    option tcplog
+    option ssl-hello-chk
+    maxconn 2048
+    server  {{ server_name_gw01 }} {{ ip_address_gw01 }}:8243 check
+    server  {{ server_name_gw02 }} {{ ip_address_gw02 }}:8243 check
