@@ -1,9 +1,23 @@
 ---
 
+  
+- name: Download Package HAProxy
+  become: true
+  get_url:
+    url: "{{ haproxy_rpm_url }}/{{ haproxy_rpm_version }}"
+    dest: /opt
+    mode: 0440
+
+- name: Install Package HAProxy
+  become: true
+  yum:
+    name: "/opt/{{ haproxy_rpm_version }}"
+    state: present
+
 - name: Install packages
   become: true
   yum:
-    name: haproxy,libselinux-python,keepalived
+    name: libselinux-python,keepalived
     state: latest
 
 - selinux:
@@ -18,7 +32,7 @@
     reload: yes
   become: true
 
-- name: Install configuration file haproxy
+- name: Apply configuration file haproxy
   template:
     src: haproxy.cfg.j2
     dest: "{{ haproxy_cfg }}"
@@ -34,6 +48,15 @@
     limit_type: '-'
     limit_item: nofile
     value: 32000
+  become: true
+
+- name: Copy file pem certificate
+  copy:
+    src: "{{ cert_pem }}"
+    dest: "{{ path_certs }}/{{ cert_pem }}"
+    owner: root
+    group: root
+    mode: 0600
   become: true
 
 - name: Install configuration file keepalived
