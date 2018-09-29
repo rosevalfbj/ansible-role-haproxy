@@ -1,3 +1,4 @@
 files/*.crt
 files/*.pem
 files/*.key
+files/*.csr
