@@ -35,7 +35,7 @@ defaults
     #tune.ssl.default-dh-param 2048
 
 listen stats
-  bind {{ ansible_ens192.ipv4.address }}:9090
+  bind {{ ansible_facts['hostname'] }}:9090
   balance
   mode http
   stats enable

@@ -1,30 +1,30 @@
 ---
-
 path_certs: "/etc/ssl"
-cert_key: "rmp.key"
-cert_crt: "rmp.crt"
-cert_pem: "rmp.pem"
+cert_key: "xip.key"
+cert_crt: "xip.crt"
+cert_pem: "xip.pem"
 
 keepalived_conf: /etc/keepalived/keepalived.conf
+keepalived_if: 'eth1'
 
 haproxy_rpm_url: "http://cbs.centos.org/kojifiles/packages/haproxy/1.8.1/5.el7/x86_64"
 haproxy_rpm_version: "haproxy18-1.8.1-5.el7.x86_64.rpm"
 haproxy_cfg: /etc/haproxy/haproxy.cfg
 
-vip_ipaddress_gw: "192.168.10.6"
-server_name_gw01: ulamtzapi-gw01
-ip_address_gw01: "192.168.10.7"
-server_name_gw02: ulamtzapi-gw02
-ip_address_gw02: "192.168.10.8"
+vip_ipaddress_gw: "192.168.50.100"
+server_name_gw01: web01
+ip_address_gw01: "192.168.50.20"
+server_name_gw02: web02
+ip_address_gw02: "192.168.50.21"
 
-vip_ipaddress_km: "192.168.10.12"
-server_name_km01: ulamtzapi-km01
-ip_address_km01: "192.168.10.13"
-server_name_km02: ulamtzapi-km02
-ip_address_km02: "192.168.10.14"
+vip_ipaddress_km: "192.168.50.101"
+server_name_km01: ws01
+ip_address_km01: "192.168.50.30"
+server_name_km02: ws02
+ip_address_km02: "192.168.50.31"
 
-vip_ipaddress_dss: "192.168.10.9"
-server_name_dss01: ulamtzapi-dss01
-ip_address_dss01: "192.168.10.10"
-server_name_dss02: ulamtzapi-dss02
-ip_address_dss02: "192.168.10.11"
+vip_ipaddress_dss: "192.168.50.102"
+server_name_dss01: dss01
+ip_address_dss01: "192.168.50.40"
+server_name_dss02: dss02
+ip_address_dss02: "192.168.50.41"
