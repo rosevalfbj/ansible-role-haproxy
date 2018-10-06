@@ -1,4 +1,4 @@
-files/*.crt
-files/*.pem
-files/*.key
-files/*.csr
+files/etc/ssl/*.crt
+files/etc/ssl/*.pem
+files/etc/ssl/*.key
+files/etc/ssl/*.csr

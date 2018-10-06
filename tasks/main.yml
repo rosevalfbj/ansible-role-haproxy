@@ -53,15 +53,27 @@
     limit_type: '-'
     limit_item: nofile
     value: 32000
+  notify: restart haproxy
   become: true
 
 - name: Copy file pem certificate
   copy:
-    src: "{{ cert_pem }}"
+    src: "etc/ssl/{{ cert_pem }}"
     dest: "{{ path_certs }}/{{ cert_pem }}"
     owner: root
     group: root
     mode: 0600
+  notify: restart haproxy
+  become: true
+
+- name: Copy file pem valid certificate
+  copy:
+    src: "etc/ssl/{{ cert_valid_pem }}"
+    dest: "{{ path_certs }}/{{ cert_valid_pem }}"
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart haproxy
   become: true
 
 - name: Install configuration file keepalived

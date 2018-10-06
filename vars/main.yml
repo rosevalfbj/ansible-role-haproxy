@@ -1,8 +1,7 @@
 ---
 path_certs: "/etc/ssl"
-cert_key: "xip.key"
-cert_crt: "xip.crt"
 cert_pem: "xip.pem"
+cert_valid_pem: "xip_valid.pem"
 
 keepalived_conf: /etc/keepalived/keepalived.conf
 keepalived_if: 'eth1'
